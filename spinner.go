@@ -29,14 +29,14 @@ func getSpinner(spinnerName string, duration time.Duration) (spinner, error) {
 	case "ArrowSpinner":
 		return spinner{
 			SpinnerName:     "ArrowSpinner", // "ArrowSpinner"
-			SpinnerInterval: 50,             // add interval
+			SpinnerInterval: 50,             // interval
 			SpinnerDuration: duration,
 			SpinnerParts:    []string{`←`, `↖`, `↑`, `↗`, `→`, `↘`, `↓`, `↙`},
 		}, nil
 	case "DashSpinner":
 		return spinner{
-			SpinnerName:     "DashSpinner", // "ArrowSpinner"
-			SpinnerInterval: 50,            // add interval
+			SpinnerName:     "DashSpinner", // "DashSpinner"
+			SpinnerInterval: 50,            // interval
 			SpinnerDuration: duration,
 			SpinnerParts:    []string{`-`, `\`, `/`},
 		}, nil
