@@ -3,6 +3,7 @@ package gospinners
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
 )
 
@@ -37,6 +38,12 @@ func getSpinner(spinnerName string, duration time.Duration) spinner {
 
 // New spinner
 func New(spinnerName string, duration time.Duration) *SpinnerInfo {
+	if spinnerName == "" {
+		log.Fatal("Spinner name is required")
+	}
+	if duration == 0 {
+		duration = 5
+	}
 	s := getSpinner(spinnerName, duration)
 	l := SpinnerInfo{
 		spinner: s,
@@ -48,7 +55,7 @@ func New(spinnerName string, duration time.Duration) *SpinnerInfo {
 func (l *SpinnerInfo) StartSpinner() {
 	if !l.running {
 		// ctx, done := context.WithCancel(context.Background()) // WithCancel
-		ctx, done := context.WithTimeout(context.Background(), time.Second*5) // withtimeout
+		ctx, done := context.WithTimeout(context.Background(), time.Second*l.spinner.SpinnerDuration) // withtimeout
 		l.done = done
 		l.running = true
 		// call to print spinner
