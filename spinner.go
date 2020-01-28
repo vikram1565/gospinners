@@ -1,4 +1,4 @@
-package main
+package gospinners
 
 import (
 	"context"
@@ -17,22 +17,8 @@ type spinner struct {
 // SpinnerInfo - SpinnerInfo struct
 type SpinnerInfo struct {
 	spinner spinner
-	// out     io.Writer
 	running bool
 	done    context.CancelFunc
-}
-
-func main() {
-	// getSpinner - get spinner
-	// s := getSpinner()
-	// o := os.Stdout
-	// // assign values to SpinnerInfo
-	// l := &SpinnerInfo{
-	// 	spinner: s,
-	// 	out:     o,
-	// }
-	// // start the spinner
-	// l.startSpinner()
 }
 
 // getSpinner - getSpinner
@@ -52,16 +38,14 @@ func getSpinner(spinnerName string, duration time.Duration) spinner {
 // New spinner
 func New(spinnerName string, duration time.Duration) *SpinnerInfo {
 	s := getSpinner(spinnerName, duration)
-	// o := os.Stdout
 	l := SpinnerInfo{
 		spinner: s,
-		// out:     o,
 	}
 	return &l
 }
 
-// startSpinner - start spinner
-func (l *SpinnerInfo) startSpinner() {
+// StartSpinner - start spinner
+func (l *SpinnerInfo) StartSpinner() {
 	if !l.running {
 		// ctx, done := context.WithCancel(context.Background()) // WithCancel
 		ctx, done := context.WithTimeout(context.Background(), time.Second*5) // withtimeout
@@ -80,20 +64,14 @@ func (l *SpinnerInfo) printSpinner(ctx context.Context) {
 		select {
 		case <-ctx.Done():
 			t.Stop() // stop : to release associated resources
+			if l.done != nil {
+				l.done()
+			}
+			l.running = false
 			return
 		case <-t.C:
-			// part := "\r" + l.spinner.SpinnerParts[n%len(l.spinner.SpinnerParts)] + " loading"
-			// fmt.Fprint(l.out, part)
 			fmt.Printf("\r%s", l.spinner.SpinnerParts[n%len(l.spinner.SpinnerParts)]+" loading")
 			n++
 		}
 	}
-}
-
-// Stop - stop is ticker struct method
-func (l *SpinnerInfo) Stop() {
-	if l.done != nil {
-		l.done()
-	}
-	l.running = false
 }
