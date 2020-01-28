@@ -2,6 +2,7 @@ package gospinners
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"time"
@@ -23,7 +24,7 @@ type SpinnerInfo struct {
 }
 
 // getSpinner - getSpinner
-func getSpinner(spinnerName string, duration time.Duration) spinner {
+func getSpinner(spinnerName string, duration time.Duration) (spinner, error) {
 	switch spinnerName {
 	case "ArrowSpinner":
 		return spinner{
@@ -31,9 +32,16 @@ func getSpinner(spinnerName string, duration time.Duration) spinner {
 			SpinnerInterval: 50,             // add interval
 			SpinnerDuration: duration,
 			SpinnerParts:    []string{`←`, `↖`, `↑`, `↗`, `→`, `↘`, `↓`, `↙`},
-		}
+		}, nil
+	case "DashSpinner":
+		return spinner{
+			SpinnerName:     "DashSpinner", // "ArrowSpinner"
+			SpinnerInterval: 50,            // add interval
+			SpinnerDuration: duration,
+			SpinnerParts:    []string{`-`, `\`, `/`},
+		}, nil
 	}
-	return spinner{}
+	return spinner{}, errors.New("Invalid spinner name")
 }
 
 // New spinner
@@ -44,7 +52,10 @@ func New(spinnerName string, duration time.Duration) *SpinnerInfo {
 	if duration == 0 {
 		duration = 5
 	}
-	s := getSpinner(spinnerName, duration)
+	s, err := getSpinner(spinnerName, duration)
+	if err != nil {
+		log.Fatal(err)
+	}
 	l := SpinnerInfo{
 		spinner: s,
 	}
